@@ -10,4 +10,4 @@
 ![YOLOV3](https://docs.ultralytics.com/models/yolov3/)
 
 ## FLASK 환경구축
-![FLASK](https://flask.palletsprojects.com/en/3.0.x/)
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
