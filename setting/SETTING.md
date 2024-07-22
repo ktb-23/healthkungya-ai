@@ -1,7 +1,7 @@
 # mac / window 개발환경
 
 ## 아나콘다 설치
-![anaconda](https://www.anaconda.com/download)
+![anaconda](https://www.anaconda.com/wp-content/uploads/2022/12/anaconda_secondary_logo.svg)(https://www.anaconda.com/download)
 
 ## 주피터 노트북 설치
 ![Jupyter notebook](https://jupyter.org/install)
