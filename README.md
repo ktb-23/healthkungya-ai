@@ -1,5 +1,8 @@
 ## mac / window 개발환경
 
+### 파이썬 v3.10
+<a href="https://www.python.org/"><img src="https://www.python.org/static/img/python-logo.png" style="width: 150px;"/></a>
+
 ### 아나콘다
 <a href="https://www.anaconda.com/download"><img src="https://www.anaconda.com/wp-content/uploads/2022/12/anaconda_secondary_logo.svg" style="width: 150px;"/></a>
 
