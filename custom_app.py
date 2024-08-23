@@ -26,6 +26,11 @@ predictor = CustomVisionPredictionClient(prediction_endpoint, prediction_credent
 project_id = "19edf899-ae63-4c2f-b404-588902ecc8a0"
 publish_iteration_name = "Iteration1"
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 @app.route('/', methods=['GET'])
 def home():
     return "Welcome to the Custom Vision Prediction API!", 200
