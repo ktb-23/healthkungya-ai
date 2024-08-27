@@ -1,13 +1,4 @@
-# custom_app.py에서 실행 안될 시 재설정방법
-# 가상환경 설정 python -m venv venv
-# activate
-# pip install azure-cognitiveservices-vision-customvision
-# pip install pandas
-# pip install msrest
-# pip install flask
-# pip install openpyxl
-
-import os
+import os, time, uuid
 import pandas as pd
 from azure.cognitiveservices.vision.customvision.training import CustomVisionTrainingClient
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
@@ -15,27 +6,27 @@ from azure.cognitiveservices.vision.customvision.training.models import ImageFil
 from msrest.authentication import ApiKeyCredentials
 
 # 환경 변수에서 Azure Custom Vision 서비스 정보 가져오기
-training_endpoint = "https://aidencustom01.cognitiveservices.azure.com/"
-training_key = "3ff38530af324ce2bcb22c2014aabe32"
-prediction_key = "ac629f102a6a4ccb98166f95915c68ff"
-prediction_resource_id = "/subscriptions/49719505-a401-4b7a-a1ab-bef190ae283f/resourceGroups/aiden-test/providers/Microsoft.CognitiveServices/accounts/aidencustom01-Prediction"
-prediction_endpoint = "https://aidencustom01-prediction.cognitiveservices.azure.com/"
+VISION_TRAINING_ENDPOINT = os.environ["VISION_TRAINING_ENDPOINT"]
+VISION_TRAINING_KEY = os.environ["VISION_TRAINING_KEY"]
+VISION_PREDICTION_KEY = os.environ["VISION_PREDICTION_KEY"]
+VISION_PREDICTION_RESOURCE_ID = os.environ["VISION_PREDICTION_RESOURCE_ID"]
+prediction_endpoint = "https://healthkungyacv-prediction.cognitiveservices.azure.com/"
 
 food_db = pd.read_excel("Food_DB.xlsx")
 
 # Custom Vision 클라이언트 초기화
-training_credentials = ApiKeyCredentials(in_headers={"Training-key": training_key})
-trainer = CustomVisionTrainingClient(training_endpoint, training_credentials)
+training_credentials = ApiKeyCredentials(in_headers={"Training-key": VISION_TRAINING_KEY})
+trainer = CustomVisionTrainingClient(VISION_TRAINING_ENDPOINT, training_credentials)
 
-prediction_credentials = ApiKeyCredentials(in_headers={"Prediction-key": prediction_key})
+prediction_credentials = ApiKeyCredentials(in_headers={"Prediction-key": VISION_PREDICTION_KEY})
 predictor = CustomVisionPredictionClient(prediction_endpoint, prediction_credentials)
 
 # 프로젝트 ID와 퍼블리시 이름 설정
-project_id = "19edf899-ae63-4c2f-b404-588902ecc8a0"
-publish_iteration_name = "Iteration1"
+project_id = "56bddca9-b0ee-45b6-aa4b-064b5a618619"
+publish_iteration_name = "Iteration3"
 
 # 예측 처리
-image_url = "https://recipe1.ezmember.co.kr/cache/recipe/2015/08/27/932b0eac49b0f341ee9b91553d84d9b91.jpg"
+image_url = "https://t1.daumcdn.net/cfile/tistory/9986BC3C5DF1B5C31A"
 results = predictor.classify_image_url(project_id, publish_iteration_name, image_url)
 
 # 예측된 태그 처리

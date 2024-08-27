@@ -8,12 +8,25 @@ import pandas as pd
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
 
+import os
+from flask import Flask, request, jsonify, session, send_from_directory
+import pandas as pd
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+
+from dotenv import load_dotenv
+import os
+load_dotenv()  # .env 파일에서 환경 변수를 불러옴
+training_key = os.getenv('VISION_TRAINING_KEY')
+training_endpoint = os.getenv('VISION_TRAINING_ENDPOINT')
+
+
 app = Flask(__name__)
 app.secret_key = 'a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ' # 세션을 사용하기 위해 필요
 
 # Custom Vision 설정
-prediction_endpoint = "https://aidencustom01-prediction.cognitiveservices.azure.com/"
-prediction_key = "ac629f102a6a4ccb98166f95915c68ff"
+prediction_endpoint = "https://healthkungyacv-prediction.cognitiveservices.azure.com/"
+prediction_key = "7c0683360f1e4e6f937f3c3fa111f233"
 
 # DB 파일 읽어오기
 food_db = pd.read_excel("Food_DB.xlsx")
@@ -23,8 +36,8 @@ prediction_credentials = ApiKeyCredentials(in_headers={"Prediction-key": predict
 predictor = CustomVisionPredictionClient(prediction_endpoint, prediction_credentials)
 
 # 프로젝트 ID와 퍼블리시 설정
-project_id = "19edf899-ae63-4c2f-b404-588902ecc8a0"
-publish_iteration_name = "Iteration1"
+project_id = "56bddca9-b0ee-45b6-aa4b-064b5a618619"
+publish_iteration_name = "Iteration3"
 
 @app.route('/favicon.ico')
 def favicon():
@@ -84,4 +97,5 @@ def post_prediction_result():
         return jsonify({"message": "데이터베이스에서 일치하는 태그를 찾을 수 없습니다."}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5001)
+    # mac os에서 airplay receiver이 5000번 포트를 사용중이라 5001로 변경
