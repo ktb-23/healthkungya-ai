@@ -1,28 +1,29 @@
 # 가상환경 설정 python -m venv venv
-# 가상환경 실행 activate
+# 가상환경 실행 activate (또는 source venv/bin/activate)
 # python custom_app.py 입력
 # 가상환경 종료 deactivate
 
-from flask import Flask, request, jsonify, session
-import pandas as pd
-from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
-from msrest.authentication import ApiKeyCredentials
+# 필요한 모듈 설치해주세요. (flask_cors 등)
 
 import os
 from flask import Flask, request, jsonify, session, send_from_directory
 import pandas as pd
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
-
+from flask_cors import CORS
 from dotenv import load_dotenv
-import os
+
 load_dotenv()  # .env 파일에서 환경 변수를 불러옴
 training_key = os.getenv('VISION_TRAINING_KEY')
 training_endpoint = os.getenv('VISION_TRAINING_ENDPOINT')
 
-
 app = Flask(__name__)
 app.secret_key = 'a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ' # 세션을 사용하기 위해 필요
+
+# CORS 설정
+# CORS(app, resources={r"/*": {"origins": "https://apis.doongyi.com"}}, supports_credentials=True)
+# 만약 모든 origine을 허용한다면 위 코드 대신 아래의 코드 넣기
+CORS(app, supports_credentials=True)
 
 # Custom Vision 설정
 prediction_endpoint = "https://healthkungyacv-prediction.cognitiveservices.azure.com/"
