@@ -1,37 +1,24 @@
-# 가상환경 설정 python -m venv venv
-# 가상환경 실행 activate (또는 source venv/bin/activate)
-# python custom_app.py 입력
-# 가상환경 종료 deactivate
+# 가상환경 생성: python -m venv venv
+# 가상환경 실행: activate (또는 source venv/bin/activate)
+# 필요한 모듈 설치: pip install -r requirements.txt
+# 서버 실행: flask --app custom_app run --port 5001
+# 가상환경 종료: deactivate
 
-# 필요한 모듈 설치해주세요. (flask_cors 등)
-
-import asyncio
-import os
-from flask import Flask, request, jsonify, session, send_from_directory
+from flask import Flask, request, jsonify
 import pandas as pd
 from azure.cognitiveservices.vision.customvision.prediction import (
     CustomVisionPredictionClient,
 )
 from msrest.authentication import ApiKeyCredentials
-from flask_cors import CORS
-from dotenv import load_dotenv
 import requests
 import threading
-
-load_dotenv()  # .env 파일에서 환경 변수를 불러옴
-training_key = os.getenv("VISION_TRAINING_KEY")
-training_endpoint = os.getenv("VISION_TRAINING_ENDPOINT")
 
 app = Flask(__name__)
 app.secret_key = "a1B2c3D4e5F6g7H8i9J0kLmNoPqRsTuVwXyZ"  # 세션을 사용하기 위해 필요
 
-# CORS 설정
-# CORS(app, resources={r"/*": {"origins": "https://apis.doongyi.com"}}, supports_credentials=True)
-# 만약 모든 origine을 허용한다면 위 코드 대신 아래의 코드 넣기
-CORS(app, supports_credentials=True)
-
 # Custom Vision 설정
 prediction_endpoint = "https://healthkungyacv-prediction.cognitiveservices.azure.com/"
+# XXX: 키가 코드에 직접 들어가 있습니다. 환경변수로 옮기는 것이 좋습니다.
 prediction_key = "7c0683360f1e4e6f937f3c3fa111f233"
 
 # DB 파일 읽어오기
@@ -95,15 +82,6 @@ def predict_image(image_url, foorlog_id):
     )
 
 
-@app.route("/favicon.ico")
-def favicon():
-    return send_from_directory(
-        os.path.join(app.root_path, "static"),
-        "favicon.ico",
-        mimetype="image/vnd.microsoft.icon",
-    )
-
-
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to the Custom Vision Prediction API!", 200
@@ -126,4 +104,3 @@ def get_image_url():
 
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5001)
-    # mac os에서 airplay receiver이 5000번 포트를 사용중이라 5001로 변경
