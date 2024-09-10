@@ -1,0 +1,6 @@
+Flask
+pandas
+azure-cognitiveservices-vision-customvision
+msrest
+flask-cors
+python-dotenv
