@@ -1,0 +1,44 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - test  # test 브랜치에 push가 발생할 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Copy files to EC2 server
+      uses: appleboy/scp-action@v0.1.3
+      with:
+        host: ${{ secrets.EC2_IP }}
+        username: ubuntu
+        key: ${{ secrets.TONY_EC2_KEY_KTB_23 }}
+        source: "."
+        target: "/home/ubuntu/health"  # 프로젝트 디렉토리 위치
+
+    - name: SSH and restart Flask app using nohup
+      uses: appleboy/ssh-action@v0.1.3
+      with:
+        host: ${{ secrets.EC2_IP }}
+        username: ubuntu
+        key: ${{ secrets.TONY_EC2_KEY_KTB_23 }}
+        script: |
+          cd /home/ubuntu/health  # 프로젝트 디렉토리로 이동
+          
+          # 기존 Flask 서버가 있으면 중지
+          pkill -f custom_app.py || echo "No server running"
+          
+          # 최신 코드 가져오기
+          git pull origin test
+          
+          # 필요한 패키지 설치
+          /home/ubuntu/health/venv/bin/pip install -r requirements.txt
+          
+          # nohup을 사용해 Flask 서버를 백그라운드에서 실행
+          nohup /home/ubuntu/health/venv/bin/python /home/ubuntu/health/custom_app.py > flask_output.log 2>&1 &
