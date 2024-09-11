@@ -22,23 +22,20 @@ jobs:
         source: "."
         target: "/home/ubuntu/health"  # 프로젝트 디렉토리 위치
 
-    - name: SSH to ec2
-      uses: appleboy/ssh-action@master 
-      with:
-        host: ${{ secrets.EC2_IP }}
-        username: ubuntu
-        key: ${{ secrets.TONY_EC2_KEY_KTB_23 }}
-        script: |
-          cd /home/ubuntu/health  # 프로젝트 디렉토리로 이동
-          
-          # 기존 Flask 서버가 있으면 중지
-          pkill -f custom_app.py || echo "No server running"
-          
-          # 최신 코드 가져오기
-          git pull origin main
-          
-          # 필요한 패키지 설치
-          /home/ubuntu/health/venv/bin/pip install -r requirements.txt
-          
-          # nohup을 사용해 Flask 서버를 백그라운드에서 실행
-          nohup /home/ubuntu/health/venv/bin/python /home/ubuntu/health/custom_app.py > flask_output.log 2>&1 &
+    - name: SSH into EC2 and restart Flask app
+      run: |
+          ssh -i ${{ secrets.EC2_SSH_KEY }} ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+            cd /home/ubuntu/health
+            
+            # 기존 Flask 서버가 있으면 중지
+            pkill -f custom_app.py || echo "No server running"
+            
+            # 최신 코드 가져오기
+            git pull origin main
+            
+            # 필요한 패키지 설치
+            /home/ubuntu/health/venv/bin/pip install -r requirements.txt
+            
+            # nohup을 사용해 Flask 서버를 백그라운드에서 실행
+            nohup /home/ubuntu/health/venv/bin/python /home/ubuntu/health/custom_app.py > flask_output.log 2>&1 &
+          EOF
