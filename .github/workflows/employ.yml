@@ -22,8 +22,8 @@ jobs:
         source: "."
         target: "/home/ubuntu/health"  # 프로젝트 디렉토리 위치
 
-    - name: SSH and restart Flask app using nohup
-      uses: appleboy/ssh-action@v1.0.3
+    - name: SSH to ec2
+      uses: appleboy/ssh-action@master 
       with:
         host: ${{ secrets.EC2_IP }}
         username: ubuntu
