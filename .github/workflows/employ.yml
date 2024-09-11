@@ -26,12 +26,10 @@ jobs:
       run: |
           echo "${{ secrets.TONY_EC2_KEY_KTB_23 }}" > ~/ec2_key.pem
           chmod 600 ~/ec2_key.pem
-          eval $(ssh-agent -s)
-          ssh-add ~/ec2_key.pem
 
     - name: SSH into EC2 and restart Flask app
       run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+          ssh -vvv -o StrictHostKeyChecking=no -i ~/ec2_key.pem ubuntu@${{ secrets.EC2_IP }} << 'EOF'
             cd /home/ubuntu/health
             
             # 기존 Flask 서버가 있으면 중지
