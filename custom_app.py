@@ -68,9 +68,8 @@ def predict_image(image_url, foodlog_id):
         if kcal is not None:
             results.append({"kcal": kcal, "tag": tag, "foodlog_id": foodlog_id})
 
-    # main_server_domain = "http://3.36.148.192:8000/"  # NOTE: 상황에 맞게 수정
-    # url = main_server_domain + "/api/food/image"  # NOTE: 상황에 맞게 수정
-    url = "http://3.36.148.192:8000/api/food/result"
+    main_server_domain = "http://172.30.3.159:8000/"  # NOTE: 상황에 맞게 수정
+    url = main_server_domain + "/api/food/result"  # NOTE: 상황에 맞게 수정
 
     # NOTE: 메인 서버로 결과 전송
     requests.post(
