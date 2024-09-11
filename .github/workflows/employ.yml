@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # test 브랜치에 push가 발생할 때 실행
+      - main  # main 브랜치에 push가 발생할 때 실행
 
 jobs:
   deploy:
@@ -22,9 +22,16 @@ jobs:
         source: "."
         target: "/home/ubuntu/health"  # 프로젝트 디렉토리 위치
 
+    - name: Setup SSH
+      run: |
+          echo "${{ secrets.TONY_EC2_KEY_KTB_23 }}" > ~/ec2_key.pem
+          chmod 600 ~/ec2_key.pem
+          eval $(ssh-agent -s)
+          ssh-add ~/ec2_key.pem
+
     - name: SSH into EC2 and restart Flask app
       run: |
-          ssh -i ${{ secrets.TONY_EC2_KEY_KTB_23 }} ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_IP }} << 'EOF'
             cd /home/ubuntu/health
             
             # 기존 Flask 서버가 있으면 중지
