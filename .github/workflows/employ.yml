@@ -13,34 +13,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Copy files to EC2 server
-      uses: appleboy/scp-action@v0.1.7
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
       with:
-        host: ${{ secrets.EC2_IP }}
-        username: ubuntu
-        key: ${{ secrets.TONY_EC2_KEY_KTB_23 }}
-        source: "."
-        target: "/home/ubuntu/health"  # 프로젝트 디렉토리 위치
-
-    - name: Setup SSH
+        aws-access-key-id: ${{ secrets.SEAN_FROM_TONY_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.SEAN_FROM_TONY_AWS_ACCESS_KEY_SECRET }}
+        aws-region: ap-northeast-2
+    
+    - name: Install AWS CLI
       run: |
-          echo "${{ secrets.TONY_EC2_KEY_KTB_23 }}" > ~/ec2_key.pem
-          chmod 600 ~/ec2_key.pem
+        sudo apt-get update
+        sudo apt-get install -y awscli
 
-    - name: SSH into EC2 and restart Flask app
+    - name: Invoke AWS Lambda function
       run: |
-          ssh -vvv -o StrictHostKeyChecking=no -i ~/ec2_key.pem ubuntu@${{ secrets.EC2_IP }} << 'EOF'
-            cd /home/ubuntu/health
-            
-            # 기존 Flask 서버가 있으면 중지
-            pkill -f custom_app.py || echo "No server running"
-            
-            # 최신 코드 가져오기
-            git pull origin main
-            
-            # 필요한 패키지 설치
-            /home/ubuntu/health/venv/bin/pip install -r requirements.txt
-            
-            # nohup을 사용해 Flask 서버를 백그라운드에서 실행
-            nohup /home/ubuntu/health/venv/bin/python /home/ubuntu/health/custom_app.py > flask_output.log 2>&1 &
-          EOF
+        aws lambda invoke \
+          --function-name healthkungya-AI-Priavte-CD \
+          response.json
+    
+    - name: Display Lambda response
+      run: cat response.json
