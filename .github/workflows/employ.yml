@@ -24,7 +24,7 @@ jobs:
 
     - name: SSH into EC2 and restart Flask app
       run: |
-          ssh -i ${{ secrets.EC2_SSH_KEY }} ubuntu@${{ secrets.EC2_IP }} << 'EOF'
+          ssh -i ${{ secrets.TONY_EC2_KEY_KTB_23 }} ubuntu@${{ secrets.EC2_IP }} << 'EOF'
             cd /home/ubuntu/health
             
             # 기존 Flask 서버가 있으면 중지
